@@ -6,7 +6,6 @@ import 'firebase_options.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
 import 'pages/home_page.dart';
-import 'pages/trilhas_page.dart';
 
 // Importações para criar depois (templates prontos abaixo)
 // import 'pages/desafios_page.dart';
@@ -34,7 +33,7 @@ class ElosApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
-        '/trilhas': (context) => const TrilhasPage(),
+        // '/trilhas': (context) => const TrilhasPage(),
         // '/desafios': (context) => const DesafiosPage(),
         // '/perfil': (context) => const PerfilPage(),
         // '/empresas': (context) => const EmpresasPage(),

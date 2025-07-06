@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,9 +10,54 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   String? email;
   String? password;
   String? confirmPassword;
+
+  bool isLoading = false;
+  String? errorMessage;
+
+  Future<void> _register() async {
+    final form = _formKey.currentState!;
+    if (!form.validate()) return;
+
+    form.save();
+
+    if (password != confirmPassword) {
+      setState(() {
+        errorMessage = "As senhas não coincidem";
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email!.trim(),
+        password: password!.trim(),
+      );
+      // Usuário criado com sucesso, pode redirecionar para a home ou login
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = "Erro inesperado, tente novamente.";
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +69,9 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo em cima
-                Image.asset('assets/1.jpg', height: 120),
+                
+                Image.asset('lib/assets/1.jpg', height: 120),
+
                 const SizedBox(height: 30),
 
                 // Título
@@ -36,6 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: Colors.teal,
                   ),
                 ),
+
                 const SizedBox(height: 25),
 
                 // Formulário
@@ -43,7 +91,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      // Email
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Email',
@@ -63,8 +110,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         onSaved: (value) => email = value,
                       ),
                       const SizedBox(height: 20),
-
-                      // Senha
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Senha',
@@ -81,8 +126,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         onSaved: (value) => password = value,
                       ),
                       const SizedBox(height: 20),
-
-                      // Confirmar senha
                       TextFormField(
                         decoration: const InputDecoration(
                           labelText: 'Confirmar Senha',
@@ -91,16 +134,23 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         obscureText: true,
                         validator: (value) {
-                          if (value != password) {
-                            return 'As senhas não coincidem';
+                          if (value == null || value.isEmpty) {
+                            return 'Confirme sua senha';
                           }
-                          return null;
+                          return null; // Validação da senha será feita na lógica do botão
                         },
                         onSaved: (value) => confirmPassword = value,
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
 
-                      // Botão Cadastrar
+                      if (errorMessage != null)
+                        Text(
+                          errorMessage!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+
+                      const SizedBox(height: 20),
+
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -111,25 +161,20 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              // Aqui vai a lógica de cadastro com Firebase ou outro backend
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Cadastrando...')),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'Cadastrar',
-                            style: TextStyle(fontSize: 18),
-                          ),
+                          onPressed: isLoading ? null : _register,
+                          child: isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  'Cadastrar',
+                                  style: TextStyle(fontSize: 18),
+                                ),
                         ),
                       ),
 
                       const SizedBox(height: 15),
 
-                      // Link para login
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);

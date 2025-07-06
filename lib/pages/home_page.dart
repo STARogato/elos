@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset('assets/logo.png'), // substitua por sua logo
+          child: Image.asset('lib/assets/1.jpg'),
         ),
       ),
       body: Padding(
