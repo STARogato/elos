@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1013856830454",
+    "project_id": "elos-app-1efa4",
+    "storage_bucket": "elos-app-1efa4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013856830454:android:64d64b1a0b292b6b2fbdd7",
+        "android_client_info": {
+          "package_name": "com.example.elos_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtTgIBV5NlHMIaug_oLKYDr9vfG89jc5c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
